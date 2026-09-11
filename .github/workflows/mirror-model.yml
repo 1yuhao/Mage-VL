@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
-      MAGE_WORK_DIR: ${{ runner.temp }}/mage-vl
+      MAGE_WORK_DIR: /tmp/mage-vl
       HF_XET_HIGH_PERFORMANCE: '1'
       PYTHONUNBUFFERED: '1'
     steps:
