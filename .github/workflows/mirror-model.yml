@@ -1,0 +1,31 @@
+name: Mirror Mage-VL model
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: mage-vl-mirror
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MAGE_WORK_DIR: ${{ runner.temp }}/mage-vl
+      HF_XET_HIGH_PERFORMANCE: '1'
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Free runner space for model and Git objects
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h .
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install download client
+        run: python -m pip install 'huggingface_hub>=1.0,<2'
+      - name: Download, verify, split and publish
+        run: python scripts/mirror_model.py
